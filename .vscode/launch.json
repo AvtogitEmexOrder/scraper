@@ -8,7 +8,7 @@
             "name": "scraper",
             "type": "python",
             "request": "launch",
-            "program": "scraper/main.py",
+            "program": "main.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }
