@@ -6,8 +6,11 @@ authors = ["Vladislav Gorokhov <gvsnbala@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-selenium-wire = "^5.0.0"
 selenium = "^4.5.0"
+PyYAML = "^6.0"
+pydantic = "^1.10.2"
+selenium-wire = "4.6.5"
+pyOpenSSL = "22.0.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^5.0.4"
