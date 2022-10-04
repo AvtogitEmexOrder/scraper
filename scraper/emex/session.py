@@ -33,7 +33,7 @@ class Session:
         }
         return proxy_options
 
-    def sign_in(self, driver):
+    def enter_website(self, driver):
         driver.get(self.app.config.emex.host)
         self.timeout()
 
@@ -61,7 +61,7 @@ class Session:
             options=self.setting(),
             seleniumwire_options=self.proxy()
         )
-        self.sign_in(driver)
+        self.enter_website(driver)
         self.login(driver)
         self.enter_orders(driver)
 
