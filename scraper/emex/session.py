@@ -1,21 +1,38 @@
+import orjson
 import random
 import time
 import typing
+from dataclasses import dataclass
 
 if typing.TYPE_CHECKING:
-    from web import Application
+    from app import Application
 
 from selenium.webdriver.common.by import By
 from seleniumwire import webdriver
 
 
+@dataclass
 class Session:
+    request: str
+    headers: str
+    cookies: str
+
+    @property
+    def json(self):
+        return {
+            'request': str(self.request.body),
+            'headers': self.headers,
+            'cookies': self.cookies,
+        }
+
+
+class Surfing:
 
     def __init__(self, app) -> None:
         self.app: Application = app
 
     def timeout(self):
-        time.sleep(random.choice((range(2, 4))))
+        time.sleep(random.choice((range(3, 4))))
 
     def setting(self):
         options = webdriver.ChromeOptions()
@@ -68,6 +85,43 @@ class Session:
         return driver
 
 
+class Parsing:
+
+    def __init__(self, app, driver) -> None:
+        self.app: Application = app
+        self.driver = driver
+        self.request = self.get_request()
+        self.headers = self.get_headers()
+        self.cookies = self.get_cookies()
+
+    def get_request(self):
+        for requst in self.driver.requests:
+            if requst.url == self.app.config.emex.api_order:
+                return requst
+
+    def get_cookies(self):
+        cookies = self.driver.get_cookies()
+        cookie = {c['name']: c['value'] for c in cookies}
+        return cookie
+
+    def get_headers(self):
+        headers = {}
+        response = self.request
+        payload = response.headers._headers
+        for header in payload:
+            headers[header[0]] = header[1]
+        del headers['Content-Length']
+        return headers
+
+
 def setup_session_emex(app):
-    session = Session(app)
-    app.session = session.run()
+    surfing = Surfing(app)
+    driver = surfing.run()
+    pars = Parsing(app, driver)
+    driver.quit()
+
+    app.session = Session(
+        request=pars.request,
+        headers=pars.headers,
+        cookies=pars.cookies,
+    )
