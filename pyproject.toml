@@ -11,6 +11,8 @@ PyYAML = "^6.0"
 pydantic = "^1.10.2"
 selenium-wire = "4.6.5"
 pyOpenSSL = "22.0.0"
+Flask = "^2.2.2"
+orjson = "^3.8.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^5.0.4"
