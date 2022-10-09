@@ -1,4 +1,3 @@
-import orjson
 import random
 import time
 import typing
@@ -20,7 +19,7 @@ class Session:
     @property
     def json(self):
         return {
-            'request': str(self.request.body),
+            'request': self.request.body.decode('utf-8'),
             'headers': self.headers,
             'cookies': self.cookies,
         }
