@@ -1,35 +1,17 @@
 import random
 import time
 import typing
-from dataclasses import dataclass
 
-from scraper.errors import (
-    InvalidSelectorSeleniumError, 
-    NoSuchElementError, 
-    NotFoundRequestError,
-)
+from scraper.errors import InvalidSelectorSeleniumError, NoSuchElementError, NotFoundRequestError
 
 if typing.TYPE_CHECKING:
-    from app import Application
+    from scraper.app import Application
 
 from selenium.common.exceptions import InvalidSelectorException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from seleniumwire import webdriver
 
-
-@dataclass
-class Session:
-    request: str
-    headers: str
-    cookies: str
-
-    @property
-    def json(self):
-        return {
-            'request': self.request.body.decode('utf-8'),
-            'headers': self.headers,
-            'cookies': self.cookies,
-        }
+from scraper.model import Session
 
 
 class Surfing:
@@ -84,7 +66,7 @@ class Surfing:
             options=self.setting(),
             seleniumwire_options=self.proxy()
         )
-        #TODO: Когда не верный логин и пароль, что делать?!
+        #TODO: invalid login and password
         try:
             self.enter_website(driver)
             self.login(driver)
