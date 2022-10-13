@@ -8,7 +8,7 @@ class Application():
         self.session: Session = None
 
 
-def run_app():
+def setup_app():
     app = Application()
     setup_config(app, config_path='config.yml')
     setup_session_emex(app)
