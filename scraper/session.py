@@ -3,9 +3,16 @@ import time
 import typing
 from dataclasses import dataclass
 
+from scraper.errors import (
+    InvalidSelectorSeleniumError, 
+    NoSuchElementError, 
+    NotFoundRequestError,
+)
+
 if typing.TYPE_CHECKING:
     from app import Application
 
+from selenium.common.exceptions import InvalidSelectorException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from seleniumwire import webdriver
 
@@ -77,9 +84,15 @@ class Surfing:
             options=self.setting(),
             seleniumwire_options=self.proxy()
         )
-        self.enter_website(driver)
-        self.login(driver)
-        self.enter_orders(driver)
+        #TODO: Когда не верный логин и пароль, что делать?!
+        try:
+            self.enter_website(driver)
+            self.login(driver)
+            self.enter_orders(driver)
+        except InvalidSelectorException:
+            raise InvalidSelectorSeleniumError('Invalid selector selenium')
+        except NoSuchElementException:
+            raise NoSuchElementError('Selenium not found such element, maybe the page didn\'t load')
 
         return driver
 
@@ -97,18 +110,15 @@ class Parsing:
         for requst in self.driver.requests:
             if requst.url == self.app.config.emex.api_order:
                 return requst
+            raise NotFoundRequestError('Not Found Request in driver')
 
     def get_cookies(self):
         cookies = self.driver.get_cookies()
-        cookie = {c['name']: c['value'] for c in cookies}
-        return cookie
+        return {c['name']: c['value'] for c in cookies}
 
     def get_headers(self):
-        headers = {}
-        response = self.request
-        payload = response.headers._headers
-        for header in payload:
-            headers[header[0]] = header[1]
+        response = self.request.headers._headers
+        headers = {header[0]: header[1] for header in response}
         del headers['Content-Length']
         return headers
 
