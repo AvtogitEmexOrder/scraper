@@ -110,7 +110,7 @@ class Parsing:
         for requst in self.driver.requests:
             if requst.url == self.app.config.emex.api_order:
                 return requst
-            raise NotFoundRequestError('Not Found Request in driver')
+        raise NotFoundRequestError('Not Found Request in driver')
 
     def get_cookies(self):
         cookies = self.driver.get_cookies()
