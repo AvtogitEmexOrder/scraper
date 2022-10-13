@@ -1,5 +1,5 @@
 from scraper.config import setup_config, Config
-from scraper.emex.session import setup_session_emex, Session
+from scraper.session import setup_session_emex, Session
 
 
 class Application():
